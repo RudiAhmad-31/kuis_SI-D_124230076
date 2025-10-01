@@ -7,47 +7,75 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.username});
 
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Home Page"),
-      ),
+      appBar: AppBar(title: Text("Home Page")),
       body: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(12),
         child: Column(
           children: [
             Text("Selamat Datang $username"),
-            Expanded(child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16),
-              itemBuilder: (context, index){
-                return _food(context, index);
-              },
-              itemCount: dummyFoods.length,))
-            ],
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.75, // ⭐ penting supaya layout tidak ketimpa
+                ),
+                itemCount: dummyFoods.length,
+                itemBuilder: (context, index) {
+                  return _foodCard(context, index);
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-  Widget _food(context, index) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Colors.grey,
-      ),
+
+  Widget _foodCard(BuildContext context, int index) {
+    final food = dummyFoods[index];
+
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 4,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            child: Image.network(dummyFoods[index].image, height: 100, width: 100, fit: BoxFit.cover,)),
-          Text(dummyFoods[index].name),
-          Text(dummyFoods[index].category,style: TextStyle(color: Colors.grey),),
-
-
-          ElevatedButton(onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(food: dummyFoods[index],)));
-          }, child: Text("Pesan"))
+            borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+            child: Image.network(
+              food.image,
+              height: 100,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Column(
+              children: [
+                Text(food.name,
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(food.category,
+                    style: TextStyle(color: Colors.grey, fontSize: 12)),
+              ],
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DetailPage(food: food),
+                ),
+              );
+            },
+            child: const Text("Pesan"),
+          ),
         ],
       ),
     );
